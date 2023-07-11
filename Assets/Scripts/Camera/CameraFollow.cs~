@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CameraFollow : MonoBehaviour
+{
+    [SerializeField] private Transform objectFollowed;
+
+    private static CameraFollow instance;
+    public CameraFollow Instance { get => instance; }
+
+    private void Awake()
+    {
+        if (CameraFollow.instance == null)
+        {
+            CameraFollow.instance = this;
+        }
+    }
+}

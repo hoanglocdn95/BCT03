@@ -1,0 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DamageReceiver : MonoBehaviour
+{
+    private void ReceiveDamage(float amount)
+    {
+        var enemyHP = GetComponent<EnemyHP>();
+        enemyHP.DecreaseHP(amount);
+    }
+}

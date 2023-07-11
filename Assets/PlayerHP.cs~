@@ -1,0 +1,17 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerHP : MonoBehaviour
+{
+    [SerializeField] private float maxHP = 100f;
+    [SerializeField] private float currentHP = 100f;
+    [SerializeField] private float minHP = 20f;
+
+    public void IncreaseHP(float amount)
+    {
+        float ratio = currentHP / maxHP;
+        ratio = ratio < 0.2f ? 0.2f : ratio;
+        transform.parent.localScale = new Vector3(ratio, ratio, transform.parent.localScale.z); ;
+    }
+}

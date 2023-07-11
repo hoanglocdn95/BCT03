@@ -1,0 +1,48 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+public class ShootingController : MonoBehaviour
+{
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private Transform holder;
+    [SerializeField] private Transform bullet;
+
+    [SerializeField] private float bulletSpeed = 4f;
+    [SerializeField] private int bulletAmount = 3;
+    private Vector3 velocity = Vector3.zero;
+
+    [SerializeField] private float intervalTime = 0.5f;
+    [SerializeField] private float delayTime;
+
+    private void Start()
+    {
+        delayTime = intervalTime;
+    }
+
+    private void FixedUpdate()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Shooting();
+        }
+    }
+
+    private void Shooting()
+    {
+        delayTime += Time.fixedDeltaTime;
+        if (delayTime < intervalTime) return;
+        delayTime = 0f;
+
+        Quaternion rotation = Quaternion.identity;
+        GameObject newBullet = Instantiate(bullet.gameObject, spawnPoint.position, rotation);
+
+        Vector3 targetPosition = transform.position + new Vector3(transform.position.x * 10f, transform.position.y, transform.position.z);
+
+        newBullet.transform.position = Vector3.MoveTowards(spawnPoint.position, targetPosition, bulletSpeed * Time.deltaTime);
+
+        newBullet.SetActive(true);
+    }
+}

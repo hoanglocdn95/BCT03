@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BulletMovement : MonoBehaviour
+{
+    [SerializeField] private float bulletSpeed = 10f;
+    [SerializeField] private float distanceDespawn = 10f;
+    private Vector3 direction = Vector3.right;
+    private Vector3 initPosition;
+
+    private void Awake()
+    {
+        initPosition = transform.position;
+        direction = PlayerMovement.Instance.isFacingRight ? Vector3.right : Vector3.left;
+    }
+
+    private void Start()
+    {
+        transform.GetComponent<Rigidbody2D>().velocity = direction * bulletSpeed;
+    }
+
+    void FixedUpdate()
+    {
+        Despawn();
+    }
+
+    private void Despawn()
+    {
+        float distance = Vector3.Distance(initPosition, transform.position);
+        if (distance > distanceDespawn)
+        {
+            ShootingController.Instance.bulletCount--;
+            Destroy(transform.gameObject);
+        }
+    }
+}

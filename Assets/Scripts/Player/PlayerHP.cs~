@@ -1,0 +1,51 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerHP : MonoBehaviour
+{
+    [SerializeField] private float thresholdHP = 100f;
+    [SerializeField] private float currentHP = 100f;
+    [SerializeField] private float minHP = 20f;
+    private float minScale = 0.2f;
+    private float maxScale = 2f;
+
+    private static PlayerHP instance;
+    public static PlayerHP Instance { get => instance; }
+
+    private void Awake()
+    {
+        if (PlayerHP.instance == null)
+        {
+            PlayerHP.instance = this;
+        }
+    }
+
+    public void IncreaseHP(float amount)
+    {
+        currentHP += amount;
+        ScalePlayer();
+    }
+
+    public void DecreaseHP(float amount)
+    {
+        currentHP -= amount;
+        ScalePlayer();
+    }
+
+    private void ScalePlayer()
+    {
+        float ratio = currentHP / thresholdHP;
+        if (ratio < minScale)
+        {
+            ratio = minScale;
+            currentHP = thresholdHP * minScale;
+        }
+        else if (ratio > maxScale)
+        {
+            ratio = maxScale;
+            currentHP = thresholdHP * maxScale;
+        }
+        transform.parent.localScale = new Vector3(ratio, ratio, transform.parent.localScale.z);
+    }
+}
