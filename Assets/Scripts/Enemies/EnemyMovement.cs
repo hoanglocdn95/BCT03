@@ -17,6 +17,8 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
+        if (target == null) return;
+
         float heightDistance = Mathf.Abs(transform.position.y - target.position.y);
         if (transform.position.x == target.position.x || heightDistance > 2f)
         {

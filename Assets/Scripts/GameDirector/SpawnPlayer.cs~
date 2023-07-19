@@ -1,0 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpawnPlayer : SpawnPoint
+{
+    [SerializeField] private Transform Player;
+
+    protected void SpawnPlayerRandom()
+    {
+        Player.position = PointSpawn();
+        Player.gameObject.SetActive(true);
+    }
+}

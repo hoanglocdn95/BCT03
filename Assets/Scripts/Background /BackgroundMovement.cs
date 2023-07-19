@@ -21,6 +21,9 @@ public class BackgroundMovement : MonoBehaviour
 
     private void Update()
     {
-        transform.position = Vector3.SmoothDamp(transform.position, objectFollowed.position, ref velocity, smoothTime);
+        if (objectFollowed)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, objectFollowed.position, ref velocity, smoothTime);
+        }
     }
 }

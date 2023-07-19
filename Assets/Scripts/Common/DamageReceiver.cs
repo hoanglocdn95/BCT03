@@ -14,13 +14,5 @@ public class DamageReceiver : MonoBehaviour
             enemyHP.DecreaseHP(amount);
             return;
         }
-
-        var playerHP = transform.parent.GetComponentInChildren<PlayerHP>();
-
-        if (playerHP)
-        {
-            enemyHP.DecreaseHP(amount);
-            return;
-        }
     }
 }

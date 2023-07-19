@@ -22,7 +22,10 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
-        Vector3 targetPosition = objectFollowed.position + offset;
-        transform.parent.position = Vector3.SmoothDamp(transform.parent.position, targetPosition, ref velocity, smoothTime);
+        if (objectFollowed)
+        {
+            Vector3 targetPosition = objectFollowed.position + offset;
+            transform.parent.position = Vector3.SmoothDamp(transform.parent.position, targetPosition, ref velocity, smoothTime);
+        }
     }
 }

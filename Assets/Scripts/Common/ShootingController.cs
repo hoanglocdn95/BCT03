@@ -32,7 +32,7 @@ public class ShootingController : MonoBehaviour
         if (delayTime < intervalTime) return;
         if (CanShoot())
         {
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Input.GetKeyDown(KeyCode.V))
             {
                 delayTime = 0f;
                 Shooting();

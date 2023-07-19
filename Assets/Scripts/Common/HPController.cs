@@ -38,6 +38,8 @@ public class HPController : MonoBehaviour
             ratio = maxScale;
         }
 
+        AdjustHPBar();
+
         float direction = GetDirection();
         transform.parent.localScale = new Vector3(ratio * direction, ratio, transform.parent.localScale.z);
     }
@@ -46,7 +48,11 @@ public class HPController : MonoBehaviour
     {
         if (currentHP <= 0)
         {
-            Destroy(transform.parent.gameObject);
+            transform.parent.gameObject.SetActive(false);
+            AfterDie();
         }
     }
+
+    protected virtual void AdjustHPBar() { }
+    protected virtual void AfterDie() { }
 }

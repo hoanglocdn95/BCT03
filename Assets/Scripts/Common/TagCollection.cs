@@ -1,5 +1,6 @@
-﻿using System;
-public class TagCollection
+﻿public class TagCollection
 {
     public static string DamageReceiver = "DamageReceiver";
+    public static string DamageSender = "DamageSender";
+    public static string Player = "Player";
 }

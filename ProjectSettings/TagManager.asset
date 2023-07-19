@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - DamageReceiver
+  - DamageSender
   layers:
   - Default
   - TransparentFX

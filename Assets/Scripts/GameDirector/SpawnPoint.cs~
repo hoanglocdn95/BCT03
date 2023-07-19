@@ -1,0 +1,14 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpawnPoint : MonoBehaviour
+{
+    [SerializeField] private List<Transform> listSpawnPoint;
+
+    private void ChooseSpawnPoint()
+    {
+        int indexPoint = UnityEngine.Random.Range(0, listSpawnPoint.Count);
+    }
+}

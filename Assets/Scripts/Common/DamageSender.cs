@@ -15,4 +15,16 @@ public class DamageSender : MonoBehaviour
             Destroy(transform.parent.gameObject);
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag(TagCollection.Player))
+        {
+            PlayerHP playerHP = collision.transform.GetComponentInChildren<PlayerHP>();
+            if (playerHP)
+            {
+                playerHP.DecreaseHP(damage);
+            }
+        }
+    }
 }
