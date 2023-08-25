@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class CountTimeSkill : MonoBehaviour
+{
+    [SerializeField] private Text timeText;
+
+    private void Awake()
+    {
+        timeText = transform.GetComponentInChildren<Text>();
+    }
+
+    public void ChangeTimeText(float time)
+    {
+        timeText.text = time.ToString();
+    }
+}

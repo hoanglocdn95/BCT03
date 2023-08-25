@@ -1,0 +1,47 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class FxManager : MonoBehaviour
+{
+    [SerializeField] protected Transform holder;
+    [SerializeField] protected List<Transform> prefabs;
+    [SerializeField] protected List<Transform> poolObjs;
+
+    protected virtual void Awake()
+    {
+        this.LoadComponents();
+    }
+
+    protected void LoadComponents()
+    {
+        this.LoadPrefabs();
+        this.LoadHolder();
+    }
+
+    protected virtual void LoadPrefabs()
+    {
+        if (this.prefabs.Count > 0) return;
+        Transform prefabObj = transform.Find("Prefabs");
+        foreach (Transform prefab in prefabObj)
+        {
+            this.prefabs.Add(prefab);
+        }
+
+        this.HidePrefabs();
+    }
+
+    protected virtual void LoadHolder()
+    {
+        if (this.holder != null) return;
+        this.holder = transform.Find("Holder");
+    }
+
+    protected virtual void HidePrefabs()
+    {
+        foreach (Transform prefab in this.prefabs)
+        {
+            prefab.gameObject.SetActive(false);
+        }
+    }
+}

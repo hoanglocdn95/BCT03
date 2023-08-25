@@ -47,8 +47,12 @@ public class ShootingController : MonoBehaviour
         Quaternion rotation = Quaternion.identity;
         var bullet = Instantiate(bulletPrefab, spawnPoint.position, rotation);
         bullet.SetActive(true);
+
         bullet.transform.SetParent(holder);
         bulletCount++;
+
+        AudioManager.Instance.PlaySound((int)AudioManager.SoundEnum.playerShooting);
+
         PlayerHP.Instance.DecreaseHP(bulletHP);
     }
 

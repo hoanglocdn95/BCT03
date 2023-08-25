@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -10,25 +12,67 @@ public class EnemyMovement : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    [SerializeField] public bool isKnockbacked = false;
+    [SerializeField] private float knockbackTime = 0.5f;
+    [SerializeField] private float knockbackForce = 2.5f;
+    [SerializeField] private SpriteRenderer srBody;
+    private Color originalColor;
+
+    [SerializeField] private SpriteRenderer leftEye;
+    [SerializeField] private SpriteRenderer rightEye;
+    [SerializeField] private SpriteShapeRenderer mouth;
+
+    private bool allowAttack = false;
+    public bool AllowAttack { get => allowAttack; }
+
+    private EnemyTrigger enemyTrigger;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        enemyTrigger = GetComponentInChildren<EnemyTrigger>();
     }
 
     private void Update()
     {
         if (target == null) return;
 
-        float heightDistance = Mathf.Abs(transform.position.y - target.position.y);
-        if (transform.position.x == target.position.x || heightDistance > 2f)
+        if (allowAttack)
         {
             StopChasing();
             return;
+        };
+
+        float heightDistance = Mathf.Abs(transform.position.y - target.position.y);
+        if (GetDistanceToTarget() > agro || heightDistance > 2f)
+        {
+            StopChasing();
+            TriggerMode(false);
         }
 
         if (GetDistanceToTarget() <= agro && heightDistance <= 2f)
         {
             Chasing();
+            TriggerMode(true);
+        }
+
+        if (enemyTrigger.isTriggered)
+        {
+            SetMovementSpeed(8f);
+        }
+        else
+        {
+            SetMovementSpeed(4f);
+        }
+    }
+
+    private void TriggerMode(bool isTrigger)
+    {
+        if (leftEye && rightEye && mouth)
+        {
+            leftEye.color = isTrigger ? Color.red : Color.white;
+            rightEye.color = isTrigger ? Color.red : Color.white;
+            mouth.color = isTrigger ? Color.red : Color.white;
         }
     }
 
@@ -41,8 +85,7 @@ public class EnemyMovement : MonoBehaviour
     {
         if (transform.position.x > target.position.x)
         {
-            rb.velocity = new Vector2(-moveSpeed, 0);
-
+            rb.velocity = new Vector2(isKnockbacked ? knockbackForce : -moveSpeed, rb.velocity.y);
             if (isFacingRight)
             {
                 Flip();
@@ -50,7 +93,7 @@ public class EnemyMovement : MonoBehaviour
         }
         else if (transform.position.x < target.position.x)
         {
-            rb.velocity = new Vector2(moveSpeed, 0);
+            rb.velocity = new Vector2(isKnockbacked ? -knockbackForce : moveSpeed, rb.velocity.y);
             if (!isFacingRight)
             {
                 Flip();
@@ -67,5 +110,32 @@ public class EnemyMovement : MonoBehaviour
     private void StopChasing()
     {
         rb.velocity = new Vector2(0, 0);
+    }
+
+    public void Knockback()
+    {
+        isKnockbacked = true;
+
+        originalColor = srBody.color;
+        srBody.color = Color.white;
+
+        StartCoroutine(Unknockback());
+    }
+
+    private IEnumerator Unknockback()
+    {
+        yield return new WaitForSeconds(knockbackTime);
+        isKnockbacked = false;
+        srBody.color = originalColor;
+    }
+
+    public void SetAllowAttack(bool isAllow)
+    {
+        allowAttack = isAllow;
+    }
+
+    public void SetMovementSpeed(float value)
+    {
+        moveSpeed = value;
     }
 }

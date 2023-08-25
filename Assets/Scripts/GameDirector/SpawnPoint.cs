@@ -1,28 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
-public class SpawnPoint : MonoBehaviour
+public abstract class SpawnPoint : MonoBehaviour
 {
-    [SerializeField] private List<Transform> listSpawnPoint;
-
-    //private static SpawnPoint instance;
-    //public static SpawnPoint Instance { get => instance; }
-
-    //private void Awake()
-    //{
-    //    if (SpawnPoint.instance == null)
-    //    {
-    //        SpawnPoint.instance = this;
-    //    }
-    //}
+    [SerializeField] protected List<Transform> listSpawnPoint;
 
     protected Vector3 PointSpawn()
     {
-        int indexPoint = UnityEngine.Random.Range(0, listSpawnPoint.Count - 1);
-        Debug.Log($"indexPoint: {indexPoint}");
-        Debug.Log($"listSpawnPoint[indexPoint].position: {listSpawnPoint[indexPoint].position}");
+        int indexPoint = RandomIndex(listSpawnPoint.Count - 1);
         return listSpawnPoint[indexPoint].position;
+    }
+
+    protected int RandomIndex(int limit)
+    {
+        return UnityEngine.Random.Range(0, limit);
     }
 }

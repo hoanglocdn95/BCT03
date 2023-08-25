@@ -3,10 +3,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private PlayerData playerData;
+    public PlayerData PlayerData => playerData;
+
     private float horizontal;
-    private float speed = 5f;
-    private float jumpingPower = 16f;
-    private float extraJumpingPower = 12f;
+    private float speed;
+    private float jumpingPower;
+    private float extraJumpingPower;
     public bool isFacingRight = true;
 
     private bool doubleJump = false;
@@ -17,26 +20,31 @@ public class PlayerMovement : MonoBehaviour
 
     private bool canDash = true;
     private bool isDashing;
-    private float dashingPower = 24f;
-    private float dashingTime = 0.2f;
-    private float dashingCooldown = 1f;
+    private float dashingPower;
+    private float dashingTime;
+    private float dashingCooldown;
     [SerializeField] private TrailRenderer tr;
 
     private bool isWallSliding;
-    private float wallSlidingSpeed = 2f;
+    private float wallSlidingSpeed;
 
     private bool isWallJumping;
     private float wallJumpingDirection;
-    private float wallJumpingTime = 0.2f;
+    private float wallJumpingTime;
     private float wallJumpingCounter;
-    private float wallJumpingDuration = 0.4f;
-    [SerializeField] private Vector2 wallJumpingPower = new Vector2(4f, 16f);
+    private float wallJumpingDuration;
+    [SerializeField] private Vector2 wallJumpingPower;
     [SerializeField] private Transform wallCheck;
     [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private LayerMask terrainLLayer;
 
     private static PlayerMovement instance;
     public static PlayerMovement Instance { get => instance; }
+
+    [SerializeField] public bool isKnockbacked = false;
+    [SerializeField] private float knockbackTime;
+    [SerializeField] private float knockbackForce;
+    [SerializeField] private SpriteRenderer srBody;
+    private Color originalColor;
 
     private void Awake()
     {
@@ -44,6 +52,39 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerMovement.instance = this;
         }
+
+        GetPlayerData();
+    }
+
+    private void GetPlayerData()
+    {
+        if (PlayerData)
+        {
+            speed = PlayerData.movementSpeed;
+            jumpingPower = PlayerData.jumpingPower;
+            extraJumpingPower = PlayerData.extraJumpingPower;
+
+            dashingPower = PlayerData.dashingPower;
+            dashingTime = PlayerData.dashingTime;
+            dashingCooldown = PlayerData.dashingCooldown;
+
+            wallSlidingSpeed = PlayerData.wallSlidingSpeed;
+
+            wallJumpingTime = PlayerData.wallJumpingTime;
+            wallJumpingDuration = PlayerData.wallJumpingDuration;
+            wallJumpingPower = PlayerData.wallJumpingPower;
+
+            knockbackTime = PlayerData.knockbackTime;
+            knockbackForce = PlayerData.knockbackForce;
+        }
+    }
+
+    public void ResetStatus()
+    {
+        srBody.color = originalColor;
+        isKnockbacked = false;
+        canDash = true;
+        isDashing = false;
     }
 
     void Update()
@@ -60,13 +101,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         JumpAction();
-        
+
         WallSlide();
         WallJump();
 
         if (!isWallJumping)
         {
             Flip();
+        }
+
+        if (isKnockbacked)
+        {
+            rb.velocity = new Vector2(knockbackForce, rb.velocity.y);
         }
     }
 
@@ -93,16 +139,17 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.X))
         {
+            AudioManager.Instance.PlaySound((int)AudioManager.SoundEnum.playerJump, 1f, true);
             if (doubleJump || IsGrounded())
             {
                 rb.velocity = new Vector2(rb.velocity.x, doubleJump ? extraJumpingPower : jumpingPower);
                 doubleJump = !doubleJump;
             }
-        }
 
-        if (Input.GetKeyUp(KeyCode.X) && rb.velocity.y > 0f)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            //if (rb.velocity.y > 0f)
+            //{
+            //    rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            //}
         }
     }
 
@@ -124,6 +171,8 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator Dash()
     {
+        AudioManager.Instance.PlaySound((int)AudioManager.SoundEnum.playerDash, 0.8f);
+
         canDash = false;
         isDashing = true;
         float originalGravity = rb.gravityScale;
@@ -194,5 +243,22 @@ public class PlayerMovement : MonoBehaviour
     private void StopWallJumping()
     {
         isWallJumping = false;
+    }
+
+    public void Knockback()
+    {
+        isKnockbacked = true;
+        originalColor = srBody.color;
+        srBody.color = Color.cyan;
+        rb.AddForce(transform.up * 6f, ForceMode2D.Impulse);
+
+        StartCoroutine(Unknockback());
+    }
+
+    private IEnumerator Unknockback()
+    {
+        yield return new WaitForSeconds(knockbackTime);
+        isKnockbacked = false;
+        srBody.color = originalColor;
     }
 }

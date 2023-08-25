@@ -1,0 +1,113 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AudioManager : MonoBehaviour
+{
+    public static AudioManager instance;
+    public static AudioManager Instance { get => instance; }
+
+    [SerializeField] public GameObject prefab;
+
+    public AudioClip themeNormal;
+    private AudioSource themeNormalSource;
+    public AudioClip themeIntersection;
+    private AudioSource themeIntersectionSource;
+    public AudioClip themeBoss;
+    private AudioSource themeBossSource;
+
+    public AudioClip moving;
+    private AudioSource movingSource;
+
+    public AudioClip shooting;
+    private AudioSource shootingSource;
+
+    public AudioClip attack;
+    private AudioSource movingSource;
+
+    private float delayTime = 10f;
+
+    private void Awake()
+    {
+        if (AudioManager.instance == null)
+        {
+            AudioManager.instance = this;
+        }
+    }
+
+    protected void Start()
+    {
+        this.PlaySound(this.theme, 0.3f, true);
+    }
+
+    public void PlaySound(AudioClip clip, float volume, bool isLoopback)
+    {
+            this.Play(clip, ref themeSource, volume, isLoopback);
+    }
+
+    public void PlaySound(AudioClip clip, float volume)
+    {
+        if (clip == this.waterDrop)
+        {
+            this.Play(clip, ref this.waterDropSource, volume, false, true);
+        }
+        if (clip == this.failed)
+        {
+            this.Play(clip, ref this.failedSource, volume);
+        }
+        if (clip == this.wow)
+        {
+            this.Play(clip, ref this.wowSource, volume);
+        }
+    }
+
+    private void Play(AudioClip clip, ref AudioSource audioSource, float volume, bool isLoopback = false, bool isDeplay = false)
+    {
+
+        if (isDeplay)
+        {
+            float soundDuration = clip.length;
+
+            this.delayTime += Time.fixedDeltaTime;
+            if (this.delayTime < soundDuration && !isLoopback) return;
+            this.delayTime = 0f;
+        }
+
+        audioSource = Instantiate(instance.prefab).GetComponent<AudioSource>();
+        audioSource.volume = volume;
+        audioSource.clip = clip;
+
+        if (isLoopback == false)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+        Destroy(audioSource.gameObject, audioSource.clip.length);
+    }
+
+    public void StopSound(AudioClip clip)
+    {
+        if (clip == this.waterDrop)
+        {
+            this.waterDropSource.Stop();
+            return;
+        }
+
+        if (clip == this.failed)
+        {
+            this.failedSource.Stop();
+            return;
+        }
+
+        if (clip == this.wow)
+        {
+            this.wowSource.Stop();
+            return;
+        }
+    }
+}

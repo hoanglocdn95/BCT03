@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EnemyAttack : MonoBehaviour
+{
+    public float attackRange = 5f;
+    [SerializeField] private bool isAttacking = false;
+    [SerializeField] private float attackInterval = 1f;
+    [SerializeField] private float delayAttackTime = 1f;
+    private float counter = 0;
+    [SerializeField] private float triggeredAttackInterval = 1f;
+
+    [SerializeField] private EnemyMovement enemyMovement;
+    [SerializeField] private Transform modelAttack;
+
+    private GameObject closeAttack;
+
+
+    private void Awake()
+    {
+        enemyMovement = transform.parent.GetComponent<EnemyMovement>();
+        modelAttack = transform.Find("Model");
+    }
+
+    private void FixedUpdate()
+    {
+        if (isAttacking)
+        {
+            if (counter >= delayAttackTime)
+            {
+                counter = 0;
+                Attack();
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag(TagCollection.Player))
+        {
+            isAttacking = true;
+        }
+
+
+    }
+
+    private void Attack()
+    {
+        //isAttack = true;
+        if (closeAttack)
+        {
+            AudioManager.Instance.PlaySound((int)AudioManager.SoundEnum.playerAttack);
+            closeAttack.SetActive(true);
+        }
+    }
+}

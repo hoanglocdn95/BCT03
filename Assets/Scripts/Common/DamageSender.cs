@@ -12,6 +12,10 @@ public class DamageSender : MonoBehaviour
             dr.ReceiveDamage(damage);
 
             ShootingController.Instance.bulletCount--;
+
+            Transform bulletFx = FxManager.Instance.Spawn(transform.position, new Quaternion(), 1);
+            bulletFx.gameObject.SetActive(true);
+
             Destroy(transform.parent.gameObject);
         }
     }
@@ -21,8 +25,11 @@ public class DamageSender : MonoBehaviour
         if (collision.transform.CompareTag(TagCollection.Player))
         {
             PlayerHP playerHP = collision.transform.GetComponentInChildren<PlayerHP>();
-            if (playerHP)
+            PlayerMovement playerMovement = collision.transform.GetComponent<PlayerMovement>();
+
+            if (playerHP && playerMovement && !playerMovement.isKnockbacked)
             {
+                playerMovement.Knockback();
                 playerHP.DecreaseHP(damage);
             }
         }

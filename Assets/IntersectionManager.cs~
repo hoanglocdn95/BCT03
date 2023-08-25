@@ -1,0 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class IntersectionManager : MonoBehaviour
+{
+    [SerializeField] private bool isMoving = true;
+    [SerializeField] private bool isRotating = false;
+
+}

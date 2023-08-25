@@ -10,8 +10,20 @@ public class CloseAttack : MonoBehaviour
     {
         if (collision.transform.CompareTag(TagCollection.DamageReceiver))
         {
-            var dr = collision.GetComponentInChildren<DamageReceiver>();
+            var dr = collision.GetComponent<DamageReceiver>();
             dr.ReceiveDamage(damage);
+        }
+
+        if (collision.transform.CompareTag(TagCollection.Player))
+        {
+            PlayerHP playerHP = collision.transform.GetComponentInChildren<PlayerHP>();
+            PlayerMovement playerMovement = collision.transform.GetComponent<PlayerMovement>();
+
+            if (playerHP && playerMovement && !playerMovement.isKnockbacked)
+            {
+                playerMovement.Knockback();
+                playerHP.DecreaseHP(damage);
+            }
         }
     }
 }

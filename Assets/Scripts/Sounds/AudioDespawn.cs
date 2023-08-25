@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AudioDespawn : MonoBehaviour
+{
+    [SerializeField] private float delayTime = 2f;
+    [SerializeField] private float counter = 0f;
+    private AudioSource audioSource;
+
+    private void Awake()
+    {
+        this.audioSource = transform.GetComponent<AudioSource>();
+    }
+
+    private void FixedUpdate()
+    {
+        if (this.audioSource.clip)
+        {
+            delayTime = this.audioSource.clip.length;
+        }
+
+        if (this.CanDespawn())
+        {
+            AudioManager.Instance.PutObjectInPool(transform);
+        }
+    }
+
+    private bool CanDespawn()
+    {
+        if (this.counter > this.delayTime)
+        {
+            this.counter = 0f;
+            return true;
+        }
+        this.counter += Time.fixedDeltaTime;
+        return false;
+    }
+}

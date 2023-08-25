@@ -10,6 +10,7 @@ public class HPController : MonoBehaviour
 
     public void IncreaseHP(float amount)
     {
+        if (currentHP >= thresholdHP * maxScale) return;
         currentHP += amount;
         ScaleBody();
     }
@@ -48,8 +49,11 @@ public class HPController : MonoBehaviour
     {
         if (currentHP <= 0)
         {
-            transform.parent.gameObject.SetActive(false);
             AfterDie();
+            Transform disappearFx = FxManager.Instance.Spawn(transform.position, new Quaternion(), 0);
+            disappearFx.gameObject.SetActive(true);
+
+            transform.parent.gameObject.SetActive(false);
         }
     }
 

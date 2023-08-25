@@ -1,0 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerSkill : MonoBehaviour
+{
+    private static PlayerSkill instance;
+    public static PlayerSkill Instance { get => instance; }
+
+    [SerializeField] private PlayerData playerData;
+
+    public void SetItem(int itemIndex)
+    {
+        if (playerData.pickedUpItems.Count >= playerData.maxNumberItem)
+        {
+            playerData.pickedUpItems.Remove(0);
+        } 
+            playerData.pickedUpItems.Add(itemIndex);
+    }
+}

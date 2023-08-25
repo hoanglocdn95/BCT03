@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class PlayerHP : HPController
 {
-    [SerializeField] private Image HP_Level_1;
+    [SerializeField] private Image HPStatus;
+    [SerializeField] private Image HPStatus_2;
+    private float threshold_level_0 = 1f;
     private float threshold_level_1 = 0.5f;
-    [SerializeField] private Image HP_Level_2;
     private float threshold_level_2 = 0.2f;
-    [SerializeField] private Image HP_Level_3;
 
     private static PlayerHP instance;
     public static PlayerHP Instance { get => instance; }
@@ -20,12 +20,15 @@ public class PlayerHP : HPController
         {
             PlayerHP.instance = this;
         }
+        HPStatus_2.fillAmount = 0;
     }
 
     private void Reset()
     {
         this.thresholdHP = 100f;
         this.currentHP = 100f;
+        this.HPStatus.color = Color.green;
+        PlayerMovement.Instance.ResetStatus();
     }
 
     protected override float GetDirection()
@@ -37,40 +40,39 @@ public class PlayerHP : HPController
     {
         if (currentHP <= 0)
         {
-            //transform.parent.gameObject.SetActive(false);
             PlayerLife.Instance.Decrease();
-            GameDirector.Instance.spawnPlayer.SpawnPlayerRandom();
-            //StartCoroutine(GameDirector.Instance.spawnPlayer.SpawnPlayerRandom());
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             Reset();
             ScaleBody();
+            GameDirector.Instance.spawnPlayer.SpawnPlayerRandom();
         }
     }
 
     protected override void AdjustHPBar()
     {
-
-        float ratioHP = currentHP / thresholdHP;
-
         base.AdjustHPBar();
-        if (HP_Level_1.gameObject.activeInHierarchy && ratioHP <= threshold_level_1)
+        float ratioHP = currentHP / thresholdHP;
+        HPStatus.fillAmount = ratioHP;
+
+        if (ratioHP >= threshold_level_0)
         {
-            HP_Level_1.gameObject.SetActive(false);
-        }
-        else
-        {
-            HP_Level_1.fillAmount = ratioHP;
+            HPStatus_2.fillAmount = ratioHP - threshold_level_0;
         }
 
-        if (HP_Level_2.gameObject.activeInHierarchy && ratioHP <= threshold_level_2)
+        if (ratioHP > threshold_level_1 && ratioHP <= threshold_level_0)
         {
-            HP_Level_2.gameObject.SetActive(false);
+            HPStatus.color = Color.green;
+            HPStatus_2.fillAmount = 0;
         }
-        else
+        if (ratioHP <= threshold_level_1 && ratioHP > threshold_level_2)
         {
-            HP_Level_2.fillAmount = ratioHP;
+            HPStatus.color = Color.yellow;
+            HPStatus_2.fillAmount = 0;
         }
 
-        HP_Level_3.fillAmount = ratioHP;
+        if (ratioHP <= threshold_level_2)
+        {
+            HPStatus.color = Color.red;
+            HPStatus_2.fillAmount = 0;
+        }
     }
 }

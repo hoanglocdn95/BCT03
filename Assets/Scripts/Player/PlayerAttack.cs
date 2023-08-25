@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     private GameObject closeAttack;
+    private GameObject superCloseAttack;
+    private GameObject attackObject;
     private bool isAttack = false;
     private float attackTime = 0f;
     private float attackInterval = 0.25f;
@@ -12,7 +14,26 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         closeAttack = transform.GetComponentInChildren<CloseAttack>().gameObject;
+        superCloseAttack = transform.GetComponentInChildren<SuperCloseAttack>().gameObject;
         closeAttack.SetActive(false);
+        superCloseAttack.SetActive(false);
+        GetAttackObject("CloseAttack");
+    }
+
+    public void GetAttackObject(string nameObject)
+    {
+        switch(nameObject)
+        {
+            case "CloseAttack":
+                attackObject = closeAttack;
+                break;
+            case "SuperCloseAttack":
+                attackObject = superCloseAttack;
+                break;
+            default:
+                attackObject = closeAttack;
+                break;
+        }
     }
 
     void Update()
@@ -29,9 +50,9 @@ public class PlayerAttack : MonoBehaviour
             {
                 attackTime = 0;
                 isAttack = false;
-                if (closeAttack)
+                if (attackObject)
                 {
-                    closeAttack.SetActive(isAttack);
+                    attackObject.SetActive(isAttack);
                 }
             }
         }
@@ -40,9 +61,10 @@ public class PlayerAttack : MonoBehaviour
     private void Attack()
     {
         isAttack = true;
-        if (closeAttack)
+        if (attackObject)
         {
-            closeAttack.SetActive(true);
+            AudioManager.Instance.PlaySound((int)AudioManager.SoundEnum.playerAttack);
+            attackObject.SetActive(true);
         }
     }
 }

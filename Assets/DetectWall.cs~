@@ -1,0 +1,32 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DetectWall : MonoBehaviour
+{
+    private BoxCollider2D bc;
+
+    private void Awake()
+    {
+        bc = GetComponent<BoxCollider2D>();
+        bc.isTrigger = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.transform.CompareTag(TagCollection.Player))
+        {
+            var dr = collision.transform.GetComponentInChildren<DamageReceiver>();
+            if(dr)
+            {
+                dr.ReceiveDamage(20f);
+            }
+
+            Transform bulletFx = FxManager.Instance.Spawn(transform.position, new Quaternion(), 1);
+            bulletFx.gameObject.SetActive(true);
+
+            FxManager.Instance.Spawn(transform.position, new Quaternion(), 0);
+            SkillManager.Instance.PutObjectInPool(transform);
+        }
+    }
+}

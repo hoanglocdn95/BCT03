@@ -6,6 +6,9 @@ TagManager:
   tags:
   - DamageReceiver
   - DamageSender
+  - FireArmor
+  - Terrain
+  - Enemy
   layers:
   - Default
   - TransparentFX

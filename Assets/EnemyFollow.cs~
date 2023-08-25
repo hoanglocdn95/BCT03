@@ -1,0 +1,29 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EnemyFollow : MonoBehaviour
+{
+    [SerializeField] private CircleCollider2D cc;
+    [SerializeField] private Transform player;
+    [SerializeField] private bool isPlayerAvailable;
+
+    private void Awake()
+    {
+        cc = GetComponent<CircleCollider2D>();
+        cc.isTrigger = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag(TagCollection.Player))
+        {
+            isPlayerAvailable = true;
+        }
+    }
+
+    private void DetectPlayer()
+    {
+
+    }
+}

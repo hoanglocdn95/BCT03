@@ -5,17 +5,24 @@ using UnityEngine;
 public class SpawnPlayer : SpawnPoint
 {
     [SerializeField] private Transform Player;
-    private float delaySpawn = 2f;
+
+    private void Awake()
+    {
+        LoadSpawnPlayer();
+    }
+
+    private void LoadSpawnPlayer()
+    {
+        foreach (Transform spawnPlayer in transform)
+        {
+            this.listSpawnPoint.Add(spawnPlayer);
+        }
+    }
 
     public void SpawnPlayerRandom()
     {
         Player.gameObject.SetActive(false);
-        Debug.Log("SpawnPlayerRandom ");
-
-        //yield return new WaitForSeconds(delaySpawn);
-
         Player.position = PointSpawn();
-        Debug.Log("Player.position " + Player.position);
         Player.gameObject.SetActive(true);
     }
 }

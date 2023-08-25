@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class TriggerAttack : MonoBehaviour
+{
+    [SerializeField] private float damage = 20f;
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.CompareTag(TagCollection.Player))
+        {
+            
+            PlayerHP playerHP = collision.transform.GetComponentInChildren<PlayerHP>();
+            PlayerMovement playerMovement = collision.transform.GetComponent<PlayerMovement>();
+
+            if (playerHP && playerMovement && !playerMovement.isKnockbacked)
+            {
+                playerMovement.Knockback();
+                playerHP.DecreaseHP(damage);
+            }
+        }
+    }
+}

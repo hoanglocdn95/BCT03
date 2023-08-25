@@ -1,0 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EnemyTrigger : MonoBehaviour
+{
+    [SerializeField] private float timeToTrigger = 10f;
+    [SerializeField] private float TriggerDuration = 10f;
+    [SerializeField] private float counter = 0f;
+}
