@@ -31,7 +31,7 @@ public class DamageReceiver : MonoBehaviour
                 AudioManager.Instance.PlaySound((int)AudioManager.SoundEnum.enemyHit);
                 GameDirector.Instance.spawnEnemy.DecreaseEnemyCount();
                 return;
-            }
+            } 
         }
     }
 }
